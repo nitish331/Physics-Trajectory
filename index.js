@@ -3,6 +3,7 @@ const passport = require("passport");
 const cors = require("cors");
 const http = require("http");
 const socketio = require("socket.io");
+const socket = require("./socket");
 
 require("dotenv").config();
 const PORT = process.env.PORT || 5000;
@@ -13,6 +14,7 @@ const passportStratergy = require("./config/passport");
 const routes = require("./routes/route");
 
 const bodyParser = require("body-parser");
+const { initializeScheduler } = require("./utils/TestSchedulerService");
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -29,7 +31,7 @@ app.use(routes);
 
 const server = http.createServer(app);
 
-const io = socketio(server, {
+const io = socket.init(server, {
   cors: {
     origin: "*",
     methods: ["GET", "POST"],
@@ -45,13 +47,16 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(PORT, (err) => {
+server.listen(PORT, async (err) => {
   if (err) {
     console.log("error in running the server");
     return;
   } else {
     console.log("server is up and running");
   }
+
+  // Initialize scheduler to handle any pending scheduled tests
+  await initializeScheduler();
 });
 
 // Handling Unhandled Promise Rejections

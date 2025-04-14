@@ -86,3 +86,12 @@ exports.login = async (req, res) => {
     });
   }
 };
+
+exports.logoutUser = function (req, res) {
+  req.logout(function (err) {
+    return res.status(200).json({
+      success: true,
+      message: "Logout succesfully",
+    });
+  });
+};

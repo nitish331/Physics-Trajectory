@@ -14,6 +14,14 @@ const TestSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    scheduledStartTime: {
+      type: Date,
+      default: null,
+    },
+    scheduledEndTime: {
+      type: Date,
+      default: null,
+    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
